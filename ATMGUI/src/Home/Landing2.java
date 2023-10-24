@@ -71,7 +71,9 @@ public class Landing2 extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == withdrawButton) {
-            // Handle Withdraw button action
+            Deposit Depo =new Deposit();
+            Depo.setVisible(true);
+            dispose();
         } else if (e.getSource() == depositButton) {
             // Handle Deposit button action
         } else if (e.getSource() == transactionsButton) {
