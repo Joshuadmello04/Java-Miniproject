@@ -1,77 +1,80 @@
 package Home;
 
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
 
 public class Deposit extends JFrame implements ActionListener {
 
-    private Label label;
-    private TextField textField;
-    private Button button;
+    private JLabel label;
+    private JTextField textField;
+    private JButton button;
+    private JButton backButton;
+    private JPanel contentPane;
 
     public Deposit() {
-        setLayout(new GridBagLayout()); // Use GridBagLayout for precise component positioning
-        
-        // Create constraints for the title label to center it
-        GridBagConstraints titleConstraints = new GridBagConstraints();
-        titleConstraints.gridx = 0;
-        titleConstraints.gridy = 0;
-        titleConstraints.insets = new Insets(10, 10, 10, 10);
-        titleConstraints.gridwidth = 2; // Span 2 columns
-        titleConstraints.anchor = GridBagConstraints.CENTER;
+        contentPane = new JPanel();
+        contentPane.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        label = new Label("Deposit amount");
-        add(label, titleConstraints);
+        label = new JLabel("Deposit amount");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        contentPane.add(label, gbc);
 
-        // Create constraints for the amount label
-        GridBagConstraints amountLabelConstraints = new GridBagConstraints();
-        amountLabelConstraints.gridx = 0;
-        amountLabelConstraints.gridy = 1;
-        amountLabelConstraints.insets = new Insets(10, 10, 10, 10);
+        label = new JLabel("Amount:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        contentPane.add(label, gbc);
 
-        label = new Label("Amount:");
-        add(label, amountLabelConstraints);
+        textField = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        contentPane.add(textField, gbc);
 
-        // Create constraints for the amount TextField
-        GridBagConstraints textFieldConstraints = new GridBagConstraints();
-        textFieldConstraints.gridx = 1;
-        textFieldConstraints.gridy = 1;
-        textFieldConstraints.insets = new Insets(10, 10, 10, 10);
-        textFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
+        backButton = createStyledButton("Back");
+        gbc.gridx = 3;
+        gbc.gridy = 4;  
+        backButton.addActionListener(this);
+        contentPane.add(backButton, gbc);
 
-        textField = new TextField("Amount", 20);
-        add(textField, textFieldConstraints);
-
-        // Create constraints for the OK button
-        GridBagConstraints buttonConstraints = new GridBagConstraints();
-        buttonConstraints.gridx = 1;
-        buttonConstraints.gridy = 2;
-        buttonConstraints.insets = new Insets(10, 10, 10, 10);
-
-        button = new Button("OK");
+        button = new JButton("OK");
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         button.addActionListener(this);
-        add(button, buttonConstraints);
+        contentPane.add(button, gbc);
 
         setTitle("Deposit GUI");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setContentPane(contentPane);
         setPreferredSize(new Dimension(600, 400));
         pack();
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button) 
-        {   
+        if (e.getSource() == button) {
             String amount = textField.getText();
-            {
-                JOptionPane.showMessageDialog(this, "You have successfully deposited " + amount + " amount", "Success", JOptionPane.INFORMATION_MESSAGE);
-                
-            }
+            JOptionPane.showMessageDialog(this, "You have successfully deposited " + amount + " amount", "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
             System.out.println("Deposited: " + amount);
+        } else if (e.getSource() == backButton) {
+            Landing2 land = new Landing2();
+            land.setVisible(true);
+            dispose();
         }
+    }
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setBackground(Color.GRAY);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        return button;
     }
 
     public static void main(String[] args) {
