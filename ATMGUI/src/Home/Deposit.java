@@ -1,6 +1,11 @@
 package Home;
 
 import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -14,7 +19,21 @@ public class Deposit extends JFrame implements ActionListener {
     private JPanel contentPane;
 
     public Deposit() {
-        contentPane = new JPanel();
+        
+        
+
+        contentPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gradientPaint = new GradientPaint(0, 0, new Color(37, 78, 123), getWidth(), getHeight(),
+                        new Color(0, 128, 255));
+                g2d.setPaint(gradientPaint);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+
         contentPane.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -37,17 +56,19 @@ public class Deposit extends JFrame implements ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         contentPane.add(textField, gbc);
 
-        backButton = createStyledButton("Back");
-        gbc.gridx = 3;
-        gbc.gridy = 4;  
-        backButton.addActionListener(this);
-        contentPane.add(backButton, gbc);
+        
 
         button = new JButton("OK");
         gbc.gridx = 1;
         gbc.gridy = 2;
         button.addActionListener(this);
         contentPane.add(button, gbc);
+
+        backButton = createStyledButton("Back");
+        gbc.gridx = 3;
+        gbc.gridy = 4;  
+        backButton.addActionListener(this);
+        contentPane.add(backButton, gbc);
 
         setTitle("Deposit GUI");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
