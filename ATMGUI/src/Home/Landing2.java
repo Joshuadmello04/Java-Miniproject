@@ -81,7 +81,9 @@ public class Landing2 extends JFrame implements ActionListener {
             Depo.setVisible(true);
             dispose();
         } else if (e.getSource() == transactionsButton) {
-            // Handle Transactions button action
+            TransactinHistory TH = new TransactinHistory();
+            TH.setVisible(true);
+            dispose();
         } else if (e.getSource() == balanceButton) {
             // Handle Check Balance button action
             Balance bal =new Balance();
