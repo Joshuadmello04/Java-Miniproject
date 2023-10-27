@@ -1,5 +1,6 @@
 package Home;
 
+import java.sql.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,14 +14,11 @@ public class LoginPage extends JFrame implements ActionListener {
     private JButton loginButton;
     private Font customFont = new Font("Tahoma", Font.PLAIN, 18);
     private Color primaryColor = new Color(68, 108, 179);
-    private String defaultUsername = "hello";
-    private String defaultPassword = "123";
 
     public LoginPage() {
         setTitle("ATM Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Creating the gradient panel with GridBagLayout
         JPanel gradientPanel = new JPanel(new GridBagLayout());
         gradientPanel.setBackground(primaryColor);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -81,17 +79,38 @@ public class LoginPage extends JFrame implements ActionListener {
         String username = userText.getText();
         String password = new String(passwordText.getPassword());
 
-        if (username.equals(defaultUsername) && password.equals(defaultPassword)) {
-            Landing2 landingPage = new Landing2();
-            landingPage.setVisible(true);
-            dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.");
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/atm user", "root", "");
+
+            String query = "SELECT * FROM user WHERE username=? AND atmpin=?";
+            PreparedStatement preparedStatement = con.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                // Successful login, navigate to the next page
+                Landing2 landingPage = new Landing2();
+                landingPage.setVisible(true);
+                dispose();
+            } else {
+                // Invalid credentials, show an error message
+                JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.");
+            }
+
+            con.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public static void main(String[] args) {
-        LoginPage loginPage = new LoginPage();
-        loginPage.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            LoginPage loginPage = new LoginPage();
+            loginPage.setVisible(true);
+        });
     }
 }

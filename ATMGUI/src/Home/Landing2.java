@@ -73,6 +73,9 @@ public class Landing2 extends JFrame implements ActionListener {
         if (e.getSource() == withdrawButton) 
         {
             //
+            Withdraw withdraw =new Withdraw();
+            withdraw.setVisible(true);
+            dispose();
         } else if (e.getSource() == depositButton) {
             Deposit Depo =new Deposit();
             Depo.setVisible(true);
@@ -81,6 +84,9 @@ public class Landing2 extends JFrame implements ActionListener {
             // Handle Transactions button action
         } else if (e.getSource() == balanceButton) {
             // Handle Check Balance button action
+            Balance bal =new Balance();
+            bal.setVisible(true);
+            dispose();
         } else if (e.getSource() == backButton) {
             LoginPage loginPage = new LoginPage();
             loginPage.setVisible(true);
