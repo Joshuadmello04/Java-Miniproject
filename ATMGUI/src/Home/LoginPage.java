@@ -1,5 +1,6 @@
 package Home;
 
+import java.sql.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,8 +12,6 @@ public class LoginPage extends JFrame implements ActionListener {
     private JTextField userText;
     private JPasswordField passwordText;
     private JButton loginButton;
-    private String username;
-    private String password;
     private Font customFont = new Font("Tahoma", Font.PLAIN, 18);
     private Color primaryColor = new Color(68, 108, 179);
 
@@ -77,30 +76,35 @@ public class LoginPage extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.username = userText.getText();
-        this.password = new String(passwordText.getPassword());
+        String username = userText.getText();
+        String password = new String(passwordText.getPassword());
 
-        double balance = DatabaseHelper.getBalanceFromDatabase(username, password);
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/atm user", "root", "");
 
-        if (balance != -1) {
-            Landing2 landingPage = new Landing2(balance, username, password);
-            Withdraw withdraw = new Withdraw(balance, username, password);
-            Deposit deposit = new Deposit(balance, username, password);
-            Balance bal = new Balance(balance, username, password);
-            landingPage.setVisible(true);
-            dispose();
+            String query = "SELECT * FROM user WHERE username=? AND atmpin=?";
+            PreparedStatement preparedStatement = con.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-        } else {
-            JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.");
+            if (resultSet.next()) {
+                // Successful login, navigate to the next page
+                Landing2 landingPage = new Landing2();
+                landingPage.setVisible(true);
+                dispose();
+            } else {
+                // Invalid credentials, show an error message
+                JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.");
+            }
+
+            con.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public static void main(String[] args) {
