@@ -82,7 +82,7 @@ public class LoginPage extends JFrame implements ActionListener {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/atm user", "root", "");
+                    "jdbc:mysql://localhost:3306/atm_user", "root", "Andronicus@2210");
 
             String query = "SELECT * FROM user WHERE username=? AND atmpin=?";
             PreparedStatement preparedStatement = con.prepareStatement(query);
