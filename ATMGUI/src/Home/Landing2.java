@@ -10,6 +10,8 @@ public class Landing2 extends JFrame implements ActionListener {
     private JButton backButton;
     private JButton withdrawButton;
     private JTextField withdrawalAmountField;
+
+    private JButton balanceButton;
     private Font customFont = new Font("Tahoma", Font.PLAIN, 18);
     private Color primaryColor = new Color(68, 108, 179);
 
@@ -17,9 +19,9 @@ public class Landing2 extends JFrame implements ActionListener {
     private String inputBuffer = "";
     private String username;
     private String password;
-    private double balance;
+    private int balance;
 
-    public Landing2(String username, String password, double balance) {
+    public Landing2(String username, String password, int balance) {
         this.username = username;
         this.password = password;
         this.balance = balance;
@@ -43,9 +45,14 @@ public class Landing2 extends JFrame implements ActionListener {
         setContentPane(contentPane);
 
         backButton = createStyledButton("Back");
-        backButton.setBounds(600, 500, 150, 40);
+        backButton.setBounds(600, 500, 175, 40);
         backButton.addActionListener(this);
         contentPane.add(backButton);
+
+        balanceButton = createStyledButton("Check Balance");
+        balanceButton.setBounds(600, 360, 175, 40);
+        balanceButton.addActionListener(this);
+        contentPane.add(balanceButton);
 
         withdrawalAmountField = new JTextField();
         withdrawalAmountField.setBounds(200, 100, 400, 40);
@@ -89,6 +96,10 @@ public class Landing2 extends JFrame implements ActionListener {
         } else if (e.getSource() == withdrawButton) {
             try {
                 int withdrawalAmount = Integer.parseInt(inputBuffer);
+                if (withdrawalAmount > balance) {
+                    JOptionPane.showMessageDialog(this, "Error...Insufficient funds");
+                   System.exit(0);
+                }
                 // Update the user's balance in the database
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 Connection con = DriverManager.getConnection(databaseUrl, dbUsername, dbPassword);
@@ -102,14 +113,6 @@ public class Landing2 extends JFrame implements ActionListener {
 
                 if (rowsUpdated > 0) {
                     balance -= withdrawalAmount;
-                    if(balance<0)
-                    {
-                        JOptionPane.showMessageDialog(this,"Error...Insufficient funds");
-                        LoginPage loginPage = new LoginPage();
-                        loginPage.setVisible(true);
-                        dispose();
-                    }
-                    System.exit(0);
                     JOptionPane.showMessageDialog(this, "Rs."+withdrawalAmount+" successfully withdrawn . Updated Balance is : " + (balance));
                     // Update the balance locally
                 } else {
@@ -126,7 +129,11 @@ public class Landing2 extends JFrame implements ActionListener {
             // Clear the input buffer
             inputBuffer = "";
             withdrawalAmountField.setText(inputBuffer);
-        } else {
+        } else if (e.getSource()==balanceButton) {
+            Balance bal = new Balance(username,password,balance);
+            bal.setVisible(true);
+        }
+        else {
             JButton digitButton = (JButton) e.getSource();
             String digit = digitButton.getText();
             inputBuffer += digit;
