@@ -1,11 +1,6 @@
 package Home;
 
 import java.awt.*;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -17,10 +12,14 @@ public class Withdraw extends JFrame implements ActionListener {
     private JButton button;
     private JButton backButton;
     private JPanel contentPane;
+    private double userBalance;
+    private String username;
+    private String password;
 
-    public Withdraw() {
-
-
+    public Withdraw(double balance, String username, String password) {
+        this.userBalance = balance;
+        this.username = username;
+        this.password = password;
 
         contentPane = new JPanel() {
             @Override
@@ -56,8 +55,6 @@ public class Withdraw extends JFrame implements ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         contentPane.add(textField, gbc);
 
-
-
         button = new JButton("OK");
         gbc.gridx = 1;
         gbc.gridy = 2;
@@ -80,11 +77,16 @@ public class Withdraw extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
             String amount = textField.getText();
+            double withdrawalAmount = Double.parseDouble(amount);
+
+            // Perform withdrawal operation here using DatabaseHelper class
+            DatabaseHelper.withdraw(username, withdrawalAmount);
+
             JOptionPane.showMessageDialog(this, "You have successfully withdrawn " + amount + " amount", "Success",
                     JOptionPane.INFORMATION_MESSAGE);
             System.out.println("Withdrawn: " + amount);
         } else if (e.getSource() == backButton) {
-            Landing2 land = new Landing2();
+            Landing2 land = new Landing2(userBalance, username, password);
             land.setVisible(true);
             dispose();
         }
@@ -99,9 +101,8 @@ public class Withdraw extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Withdraw withdraw = new Withdraw();
-            withdraw.setVisible(true);
-        });
+        // The main method is not used for launching the Withdraw GUI.
+        // Instead, the GUI should be launched from the LoginPage class
+        // after user authentication.
     }
 }

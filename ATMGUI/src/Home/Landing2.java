@@ -11,10 +11,16 @@ import javax.swing.*;
 
 public class Landing2 extends JFrame implements ActionListener {
     private JButton withdrawButton, depositButton, balanceButton, transactionsButton, backButton;
+    private double userBalance;
+    private String username;
+    private String password;
     private Font customFont = new Font("Tahoma", Font.PLAIN, 18);
     private Color primaryColor = new Color(68, 108, 179);
 
-    public Landing2() {
+    public Landing2(double balance, String username, String password) {
+        this.userBalance = balance;
+        this.username = username;
+        this.password = password;
         setTitle("ATM Options");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
@@ -70,23 +76,20 @@ public class Landing2 extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == withdrawButton) 
-        {
-            //
-            Withdraw withdraw =new Withdraw();
+        if (e.getSource() == withdrawButton) {
+            Withdraw withdraw = new Withdraw(userBalance, username, password);
             withdraw.setVisible(true);
             dispose();
         } else if (e.getSource() == depositButton) {
-            Deposit Depo =new Deposit();
-            Depo.setVisible(true);
+            Deposit deposit = new Deposit(userBalance, username, password);
+            deposit.setVisible(true);
             dispose();
         } else if (e.getSource() == transactionsButton) {
-            TransactinHistory TH = new TransactinHistory();
+            TransactinHistory TH = new TransactinHistory(username, password);
             TH.setVisible(true);
             dispose();
         } else if (e.getSource() == balanceButton) {
-            // Handle Check Balance button action
-            Balance bal =new Balance();
+            Balance bal = new Balance(userBalance,username,password);
             bal.setVisible(true);
             dispose();
         } else if (e.getSource() == backButton) {
@@ -97,8 +100,11 @@ public class Landing2 extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
+        double userBalance = 0.0; // Set the initial balance to 0 or fetch from the database if available
+        String username = "default"; // Set default username
+        String password = "default"; // Set default password
         SwingUtilities.invokeLater(() -> {
-            Landing2 landingPage = new Landing2();
+            Landing2 landingPage = new Landing2(userBalance, username, password);
             landingPage.setVisible(true);
         });
     }

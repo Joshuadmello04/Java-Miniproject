@@ -10,8 +10,14 @@ public class Balance extends JFrame implements ActionListener {
     private JLabel balanceLabel;
     private JButton backButton;
     private JPanel contentPane;
+    private double userBalance;
+    private String username;
+    private String password;
 
-    public Balance() {
+    public Balance(double balance, String username, String password) {
+        this.userBalance = balance;
+        this.username = username;
+        this.password = password;
         contentPane = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -43,10 +49,10 @@ public class Balance extends JFrame implements ActionListener {
         gbc.gridy = 1;
         contentPane.add(label, gbc);
 
-        balanceLabel = new JLabel("Rs. 12,000"); // Sample balance, replace it with your actual balance value
+        balanceLabel = new JLabel("Rs. " + userBalance);
         balanceLabel.setFont(new Font("Arial", Font.BOLD, 18));
         balanceLabel.setForeground(Color.WHITE);
-        gbc.gridx = 5;
+        gbc.gridx = 1;
         gbc.gridy = 1;
         contentPane.add(balanceLabel, gbc);
 
@@ -67,7 +73,8 @@ public class Balance extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == backButton) {
-            Landing2 land = new Landing2();
+            Landing2 land = new Landing2(userBalance, username, password); // Pass the user balance back to the Landing2
+                                                                           // page if needed
             land.setVisible(true);
             dispose();
         }
@@ -85,8 +92,25 @@ public class Balance extends JFrame implements ActionListener {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Balance balance = new Balance();
+            LoginPage loginPage = new LoginPage();
+            loginPage.setVisible(true);
+
+            // Wait until the user logs in and closes the login page
+            while (loginPage.isVisible()) {
+                // Wait until the login page is closed
+            }
+
+            // Get the username and password from the login page
+            String username = loginPage.getUsername();
+            String password = loginPage.getPassword();
+
+            // Fetch user balance from the database based on username and password
+            double userBalance = DatabaseHelper.getBalanceFromDatabase(username, password);
+
+            // Create an instance of Balance with fetched balance, username, and password
+            Balance balance = new Balance(userBalance, username, password);
             balance.setVisible(true);
         });
     }
+
 }

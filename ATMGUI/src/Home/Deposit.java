@@ -1,11 +1,6 @@
 package Home;
 
 import java.awt.*;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -17,10 +12,14 @@ public class Deposit extends JFrame implements ActionListener {
     private JButton button;
     private JButton backButton;
     private JPanel contentPane;
+    private double userBalance;
+    private String username;
+    private String password;
 
-    public Deposit() {
-        
-        
+    public Deposit(double balance, String username, String password) {
+        this.userBalance = balance;
+        this.username = username;
+        this.password = password;
 
         contentPane = new JPanel() {
             @Override
@@ -56,8 +55,6 @@ public class Deposit extends JFrame implements ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         contentPane.add(textField, gbc);
 
-        
-
         button = new JButton("OK");
         gbc.gridx = 1;
         gbc.gridy = 2;
@@ -66,7 +63,7 @@ public class Deposit extends JFrame implements ActionListener {
 
         backButton = createStyledButton("Back");
         gbc.gridx = 3;
-        gbc.gridy = 4;  
+        gbc.gridy = 4;
         backButton.addActionListener(this);
         contentPane.add(backButton, gbc);
 
@@ -79,12 +76,21 @@ public class Deposit extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
-            String amount = textField.getText();
-            JOptionPane.showMessageDialog(this, "You have successfully deposited " + amount + " amount", "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("Deposited: " + amount);
+            String amountString = textField.getText();
+            try {
+                double amount = Double.parseDouble(amountString);
+                DatabaseHelper.deposit(username, amount);
+                double newBalance = DatabaseHelper.getBalanceFromDatabase(username, password);
+                JOptionPane.showMessageDialog(this,
+                        "You have successfully deposited Rs. " + amount + ". New Balance: Rs. " + newBalance, "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("Deposited: " + amount);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid amount. Please enter a valid number.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         } else if (e.getSource() == backButton) {
-            Landing2 land = new Landing2();
+            Landing2 land = new Landing2(userBalance, username, password);
             land.setVisible(true);
             dispose();
         }
@@ -100,7 +106,7 @@ public class Deposit extends JFrame implements ActionListener {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Deposit deposit = new Deposit();
+            Deposit deposit = new Deposit(0.0, "default", "default");
             deposit.setVisible(true);
         });
     }

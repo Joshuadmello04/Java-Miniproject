@@ -10,18 +10,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-
-
-
-
-
 public class TransactinHistory extends JPanel {
     private JScrollPane jScrollPane1;
     private JTable jTable1;
+    private String username;
+    private String password;
 
-    public TransactinHistory() {
+    public TransactinHistory(String username, String password) {
         jScrollPane1 = new JScrollPane();
         jTable1 = new JTable();
+        this.username=username;
+        this.password=password;
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][] {
@@ -66,7 +65,7 @@ public class TransactinHistory extends JPanel {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Transaction History");
-            TransactinHistory TH = new TransactinHistory();
+            TransactinHistory TH = new TransactinHistory(username,password);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(TH);
             frame.pack();
