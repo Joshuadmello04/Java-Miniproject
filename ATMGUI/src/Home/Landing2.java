@@ -89,7 +89,6 @@ public class Landing2 extends JFrame implements ActionListener {
         } else if (e.getSource() == withdrawButton) {
             try {
                 int withdrawalAmount = Integer.parseInt(inputBuffer);
-
                 // Update the user's balance in the database
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 Connection con = DriverManager.getConnection(databaseUrl, dbUsername, dbPassword);
@@ -102,8 +101,17 @@ public class Landing2 extends JFrame implements ActionListener {
                 int rowsUpdated = preparedStatement.executeUpdate();
 
                 if (rowsUpdated > 0) {
-                    JOptionPane.showMessageDialog(this, "Withdrawal successful. New balance updated.");
-                    balance -= withdrawalAmount; // Update the balance locally
+                    balance -= withdrawalAmount;
+                    if(balance<0)
+                    {
+                        JOptionPane.showMessageDialog(this,"Error...Insufficient funds");
+                        LoginPage loginPage = new LoginPage();
+                        loginPage.setVisible(true);
+                        dispose();
+                    }
+                    System.exit(0);
+                    JOptionPane.showMessageDialog(this, "Rs."+withdrawalAmount+" successfully withdrawn . Updated Balance is : " + (balance));
+                    // Update the balance locally
                 } else {
                     JOptionPane.showMessageDialog(this, "Withdrawal failed. Please try again.");
                 }
