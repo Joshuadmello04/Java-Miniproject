@@ -15,8 +15,14 @@ public class Landing2 extends JFrame implements ActionListener {
 
     private JButton[] digitButtons;
     private String inputBuffer = "";
+    private String username;
+    private String password;
+    private double balance;
 
-    public Landing2() {
+    public Landing2(String username, String password, double balance) {
+        this.username = username;
+        this.password = password;
+        this.balance = balance;
         setTitle("ATM Options");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
@@ -72,34 +78,32 @@ public class Landing2 extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String databaseUrl = "jdbc:mysql://localhost:3306/atm%20user"; // Replace space with "%20" in the database name
+        String dbUsername = "root"; // Replace with your database username
+        String dbPassword = ""; // Replace with your database password
+
         if (e.getSource() == backButton) {
             LoginPage loginPage = new LoginPage();
             loginPage.setVisible(true);
             dispose();
         } else if (e.getSource() == withdrawButton) {
             try {
-                int withdrawalAmount = Integer.parseInt(inputBuffer); // Change to int
+                int withdrawalAmount = Integer.parseInt(inputBuffer);
 
                 // Update the user's balance in the database
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection con = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/atm_user", "root", "Andronicus@2210");
+                Connection con = DriverManager.getConnection(databaseUrl, dbUsername, dbPassword);
 
-                String username = "user";
-
-
-                // Update the balance in the database
                 String updateQuery = "UPDATE user SET balance = balance - ? WHERE username = ?";
-                
                 PreparedStatement preparedStatement = con.prepareStatement(updateQuery);
-                preparedStatement.setInt(1, withdrawalAmount); // Set as INT
+                preparedStatement.setInt(1, withdrawalAmount);
                 preparedStatement.setString(2, username);
-                 int rowsUpdated = preparedStatement.executeUpdate();
-                 rowsUpdated = preparedStatement.executeUpdate();
-                System.out.println("Rows updated: " + rowsUpdated);
+
+                int rowsUpdated = preparedStatement.executeUpdate();
 
                 if (rowsUpdated > 0) {
                     JOptionPane.showMessageDialog(this, "Withdrawal successful. New balance updated.");
+                    balance -= withdrawalAmount; // Update the balance locally
                 } else {
                     JOptionPane.showMessageDialog(this, "Withdrawal failed. Please try again.");
                 }
@@ -111,24 +115,14 @@ public class Landing2 extends JFrame implements ActionListener {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-
             // Clear the input buffer
             inputBuffer = "";
             withdrawalAmountField.setText(inputBuffer);
-        }
-
-        else {
+        } else {
             JButton digitButton = (JButton) e.getSource();
             String digit = digitButton.getText();
             inputBuffer += digit;
             withdrawalAmountField.setText(inputBuffer);
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Landing2 landingPage = new Landing2();
-            landingPage.setVisible(true);
-        });
     }
 }

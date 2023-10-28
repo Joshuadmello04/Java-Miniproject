@@ -82,7 +82,7 @@ public class LoginPage extends JFrame implements ActionListener {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/atm_user", "root", "Andronicus@2210");
+                    "jdbc:mysql://localhost:3306/atm user", "root", "");
 
             String query = "SELECT * FROM user WHERE username=? AND atmpin=?";
             PreparedStatement preparedStatement = con.prepareStatement(query);
@@ -91,8 +91,9 @@ public class LoginPage extends JFrame implements ActionListener {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
+                int balance = resultSet.getInt("balance");
                 // Successful login, navigate to the next page
-                Landing2 landingPage = new Landing2();
+                Landing2 landingPage = new Landing2(username, password, balance);
                 landingPage.setVisible(true);
                 dispose();
             } else {
