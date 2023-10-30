@@ -1,12 +1,9 @@
 package Home;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-
 import javax.swing.*;
-
 public class Landing2 extends JFrame implements ActionListener {
     private JButton backButton;
     private JButton depositButton;
@@ -21,7 +18,6 @@ public class Landing2 extends JFrame implements ActionListener {
     private String username;
     private String password;
     private int balance;
-
     public Landing2(String username, String password, int balance) {
         this.username = username;
         this.password = password;
@@ -30,10 +26,8 @@ public class Landing2 extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setSize(800, 600);
-
         int centerX = (800 - 3 * 60) / 2;
         int centerY = 250;
-
         JPanel contentPane = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -92,7 +86,6 @@ public class Landing2 extends JFrame implements ActionListener {
         depositButton.addActionListener(this);
         contentPane.add(depositButton);
 
-
         digitButtons = new JButton[10];
         for (int i = 0; i < 10; i++) {
             digitButtons[i] = new JButton(String.valueOf(i));
@@ -104,7 +97,6 @@ public class Landing2 extends JFrame implements ActionListener {
             contentPane.add(digitButtons[i]);
         }
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         String databaseUrl = "jdbc:mysql://localhost:3306/atm%20user";
@@ -125,7 +117,7 @@ public class Landing2 extends JFrame implements ActionListener {
             try {
                 int withdrawalAmount = Integer.parseInt(inputBuffer);
                 if (withdrawalAmount > balance) {
-                    JOptionPane.showMessageDialog(this, "Error...Insufficient funds");
+                    JOptionPane.showMessageDialog(this, "Error...Insufficient funds..Crash!");
                     System.exit(0);
                 }
                 Class.forName("com.mysql.cj.jdbc.Driver");
@@ -144,7 +136,6 @@ public class Landing2 extends JFrame implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(this, "Withdrawal failed. Please try again.");
                 }
-
                 con.close();
             } catch (NumberFormatException | SQLException | ClassNotFoundException ex) {
                 ex.printStackTrace();
@@ -157,7 +148,6 @@ public class Landing2 extends JFrame implements ActionListener {
                 int depositAmount = Integer.parseInt(inputBuffer);
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 Connection con = DriverManager.getConnection(databaseUrl, dbUsername, dbPassword);
-
                 String updateQuery = "UPDATE user SET balance = balance + ? WHERE username = ?";
                 PreparedStatement preparedStatement = con.prepareStatement(updateQuery);
                 preparedStatement.setInt(1, depositAmount);
@@ -171,7 +161,6 @@ public class Landing2 extends JFrame implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(this, "Deposit failed. Please try again.");
                 }
-
                 con.close();
             } catch (NumberFormatException | SQLException | ClassNotFoundException ex) {
                 ex.printStackTrace();
