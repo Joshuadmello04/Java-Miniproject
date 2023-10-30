@@ -68,6 +68,7 @@ public class LoginPage extends JFrame implements ActionListener {
         gradientPanel.add(loginButton, gbc);
 
         loginButton.addActionListener(this);
+
         add(gradientPanel);
 
         pack();
@@ -78,7 +79,6 @@ public class LoginPage extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String username = userText.getText();
         String password = new String(passwordText.getPassword());
-
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(
@@ -106,12 +106,5 @@ public class LoginPage extends JFrame implements ActionListener {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            LoginPage loginPage = new LoginPage();
-            loginPage.setVisible(true);
-        });
     }
 }
